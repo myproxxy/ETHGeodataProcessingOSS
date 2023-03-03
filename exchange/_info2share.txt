@@ -1,3 +1,34 @@
 Hier können wir Infos austauschen...
 
 https://github.com/myproxxy/ETHGeodataProcessingOSSPublic
+
+
+import os, sys
+from osgeo import gdal
+from osgeo.gdalconst import *
+
+# register all of the drivers
+gdal.AllRegister()
+
+#Open Rasterfile
+fn = 'Data/worldmap.jpg'
+ds = gdal.Open(fn)
+if ds is None:
+    print ('Datensatz %s konnte nicht geöffnet werden' %fn)
+    sys.exit(1)
+
+os.system('gdalinfo %s' %fn) 
+translatecommand = 'gdal_translate -projwin 1680 170 2200 550 %s Data/europe.tif' %fn
+print ("command to run: %s" %translatecommand )
+os.system(translatecommand)
+
+#kleinere Kopie von Europa
+translatecommand = 'gdal_translate -projwin 1680 170 2200 550 -outsize 50%% 50%% %s Data/europesmall.tif' %fn
+print ("command to run: %s" %translatecommand) 
+os.system(translatecommand)
+
+print ("")
+os.system('gdalinfo Data/europe.tif')
+print ("")
+os.system('gdalinfo Data/europesmall.tif')
+
