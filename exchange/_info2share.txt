@@ -32,3 +32,47 @@ os.system('gdalinfo Data/europe.tif')
 print ("")
 os.system('gdalinfo Data/europesmall.tif')
 
+-------------------------------------------------------------------------
+
+# -*- coding: utf-8 -*-
+
+import os, shutil, sys
+import urllib.request
+from osgeo import gdal
+from osgeo import gdalconst
+
+
+def download(url, dest, fileName=None):
+#based on:
+#http://stackoverflow.com/questions/862173/how-to-download-a-file-using-python-in-a-smarter-way/863017#863017
+
+    print("******")
+    print(url)
+    print("******")
+    r= urllib.request.urlopen(url)
+
+    fileName = os.path.join(dest, fileName)
+    with open(fileName, 'wb') as f:
+        shutil.copyfileobj(r,f)
+    r.close()
+
+if __name__=='__main__':
+
+    wmsfile = "sogis.gif"
+    if os.path.exists(wmsfile):
+        os.remove(wmsfile)
+
+    path2save2 = "Data/" #Zielpfad
+    wmslink = "https://geo.so.ch/api/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.so.agi.hintergrundkarte_farbig&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&TILED=false&DPI=96&OPACITIES=255&t=675&WIDTH=1920&HEIGHT=710&BBOX=2607051.2375,1228517.0374999999,2608067.2375,1228892.7458333333"
+    
+    download(wmslink,path2save2,wmsfile)
+
+    #Open Rasterfile
+    fn = os.path.join(path2save2,wmsfile)
+    ds = gdal.Open(fn, GA_ReadOnly)
+    if ds is None:
+        print('Could not open ' + fn)
+        sys.exit(1)
+
+    #check with gdalinfo
+    os.system('gdalinfo %s' %fn)
