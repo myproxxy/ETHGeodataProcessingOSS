@@ -76,3 +76,101 @@ if __name__=='__main__':
 
     #check with gdalinfo
     os.system('gdalinfo %s' %fn)
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# -*- coding: utf-8 -*-
+import os, sys, shutil
+import urllib.request
+from osgeo import ogr
+from osgeo import gdal
+from osgeo import gdalconst
+
+#WFS Daten von:
+#http://www.are.zh.ch/internet/baudirektion/are/de/geoinformation/geodienste_uebersicht/WebFeatureService.html
+
+def download(url, dest, fileName=None):
+#based on: 
+#http://stackoverflow.com/questions/862173/how-to-download-a-file-using-python-in-a-smarter-way/863017#863017
+    print("******")
+    print ("Start downloading of %s" %url)
+    print("******")
+
+    r= urllib.request.urlopen(url)
+
+    try:
+        fileName = os.path.join(dest, fileName)
+        with open(fileName, 'wb') as f:
+            shutil.copyfileobj(r,f)
+        print ("Saved in %s" %fileName)
+    finally:
+        r.close()
+        
+def convert2shp(path2save2,wfsfile,outputshapefile):
+    fn = os.path.join(path2save2,wfsfile)
+    
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+    if os.path.exists(outputshapefile):
+        driver.DeleteDataSource(outputshapefile) 
+    
+    #convert GMLfile to shape - if needed...
+    ogr2ogrstring = 'ogr2ogr -f "ESRI Shapefile" %s %s' %(outputshapefile,fn)
+    print (ogr2ogrstring)
+    os.system(ogr2ogrstring)
+    print ("Conversion successful...")
+    
+    #... oder GML... 
+    wfsfile = ogr.Open(fn)
+    if wfsfile is None:
+        print ("Datensatz konnte nicht geoeffnet werden.\n")
+        sys.exit( 1 )
+    
+    layer = wfsfile.GetLayer(0)
+    lname = layer.GetName()
+    
+    print ("Layername: ", lname)
+    
+    #Print out number of records:
+    numftrs = layer.GetFeatureCount()
+    print ("Anzahl Features in GML Datei: %d" %numftrs)
+    print ("")
+    
+    print ("Count Field Count", layer.GetLayerDefn().GetFieldCount())	
+    for feat in range(numftrs):
+        for i in range(layer.GetLayerDefn().GetFieldCount()):
+            field_defn = layer.GetLayerDefn().GetFieldDefn(i)
+        try:
+            print ("  %s: %s" %(field_defn.GetName(), layer.GetFeature(feat).GetField(i)))
+        except:
+            pass
+        print() 
+    
+    
+    #Get Extent
+    extent = layer.GetExtent()
+    print ("Ausdehnung:", extent)
+    print ("Oben-links:", extent[0], extent[3])
+    print ("Unten-rechts:", extent[1], extent[2])
+
+
+if __name__=='__main__':
+
+    ######################   
+    #Punktdaten:     
+    wfsfile = "testpoints.gml"
+    outputshapefile = 'wfstestpoints.shp'
+    path2save2 = "Data/"
+    wfsurl = "http://maps.zh.ch/wfs/HaltestellenZHWFS?SERVICE=WFS&VERSION=1.1.0&Request=getfeature&TYPENAME=haltestellen&MAXFEATURES=30"
+    download(wfsurl,path2save2 ,wfsfile)
+    
+    convert2shp(path2save2,wfsfile,outputshapefile)
+
+    #Liniendaten:     
+    wfsfile = "testlines.gml"
+    outputshapefile = 'wfstestlines.shp'
+    path2save2 = "Data/"
+    wfsurl = "http://maps.zh.ch/wfs/GemZHWFS?SERVICE=WFS&VERSION=1.1.0&Request=getfeature&TYPENAME=grenzen&MAXFEATURES=100"
+
+    download(wfsurl,path2save2 ,wfsfile)
+    convert2shp(path2save2,wfsfile,outputshapefile)
