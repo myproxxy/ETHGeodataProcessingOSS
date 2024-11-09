@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - python==3.9.18=h7a9c478_1_cpython
   - anyio=4.2.0=pyhd8ed1ab_0
   - appnope=0.1.3=pyhd8ed1ab_0
   - argon2-cffi=23.1.0=pyhd8ed1ab_0
@@ -171,7 +172,6 @@ dependencies:
   - pyobjc-core=10.1=py39h8602b6b_0
   - pyobjc-framework-cocoa=10.1=py39h8602b6b_0
   - pysocks=1.7.1=pyha2e5f31_6
-  - python=3.9.18=h7a9c478_1_cpython
   - python-dateutil=2.8.2=pyhd8ed1ab_0
   - python-fastjsonschema=2.19.1=pyhd8ed1ab_0
   - python-json-logger=2.0.7=pyhd8ed1ab_0
