@@ -1,0 +1,17 @@
+name: geoprocETH2024_SW
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  - gdal
+  - psycopg2
+  - shapely
+  - fiona
+  - rasterio
+  - geopandas
+  - folium
+  - leafmap
+  - jupyter
+  - jupyterlab
+  - ipykernel

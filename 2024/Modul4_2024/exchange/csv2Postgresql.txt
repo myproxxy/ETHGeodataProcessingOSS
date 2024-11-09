@@ -1,0 +1,1 @@
+ogr2ogr -f "PostgreSQL" -a_srs "EPSG:21781" PG:"host=ikgpgis.ethz.ch port=5432 dbname=casdb2023 user=casuser password=mrPope-2323-IKG" -oo X_POSSIBLE_NAMES=lng -oo Y_POSSIBLE_NAMES=lat -nlt POINT -nln "fromcsv" myfile.csv

@@ -1,0 +1,9 @@
+notebook
+psycopg2-binary
+shapely
+fiona
+rasterio
+geopandas
+folium
+ipython-notebook
+leafmap

@@ -1,0 +1,24 @@
+
+### Neues Environment: 
+# conda create --name gpETHZ2025 python=3.12
+
+### Environment aktivieren: 
+# conda activate gpETHZ2025
+
+### Jupyter Notebook installieren: 
+# conda install -c conda-forge notebook
+
+### GDAL installieren: 
+# conda install -c conda-forge gdal
+
+### Weitere Module mit pip installieren:
+
+notebook
+psycopg2-binary
+shapely
+fiona
+rasterio
+geopandas
+folium
+ipython-notebook
+leafmap
